@@ -1,13 +1,12 @@
-#todoBtn{
+#todoBtn {
   cursor: pointer;
 }
-.todoDeleteBtn{
+.todoDeleteBtn {
   margin-left: 10px;
   cursor: pointer;
 }
-.todoLi{
+.todoLi {
   align-items: center;
   gap: 10px;
   margin: 8px 0;
-
 }
