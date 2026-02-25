@@ -3,7 +3,8 @@ const todoBtn = document.getElementById("todoBtn");
 const todoUl = document.getElementById("todoUl");
 
 const todo_key = "todo_key";
-const todoObj = [];
+let todoObj = [];
+
 todoBtn.onclick = function todoInsert() {
   let todoInpValue = todoInput.value.trim();
   if (todoInpValue === "") {
@@ -12,12 +13,24 @@ todoBtn.onclick = function todoInsert() {
   }
 
   todoObj.push(todoInpValue);
-
+  saveTodos();
   renderTodos();
   todoInput.value = "";
   todoInput.focus();
   console.log(todoObj);
+  console.log(localStorage);
 };
+
+function saveTodos() {
+  localStorage.setItem(todo_key, JSON.stringify(todoObj));
+}
+function loadTodos() {
+  const raw = localStorage.getItem(todo_key);
+  todoObj = raw ? JSON.parse(raw) : [];
+}
+
+loadTodos();
+renderTodos();
 
 function renderTodos() {
   let html = "";
@@ -32,7 +45,6 @@ function renderTodos() {
 }
 function deleteItem(index) {
   todoObj.splice(index, 1);
+  saveTodos();
   renderTodos();
 }
-
-// localStorage.setItem(todo_key, todoInpValue)
