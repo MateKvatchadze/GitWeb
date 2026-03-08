@@ -5,6 +5,9 @@ const todo_key = "todo_key";
 let todoObj = [];
 let draggedId = null;
 
+let currentFilter  = "all"
+
+
 todoUl.addEventListener("drop", function (e) {
   e.preventDefault();
 
@@ -59,6 +62,25 @@ todoUl.addEventListener("click", function (e) {
   lStorageSave();
 });
 
+
+   todoUl.addEventListener("change", function(e){
+      const chekbox = e.target.closest(".todoCheckBox");
+      if(!chekbox) return;
+
+      const li = chekbox.closest("li");
+      if(!li) return;
+
+      const id = li.dataset.id
+
+      const todo = todoObj.find((t) => t.id === id);
+      if(!todo) return;
+
+      todo.done = chekbox.checked;  
+      saveTodos();
+      renderTodos();
+      })
+
+
 todoBtn.onclick = function todoInsert() {
   let todoInpValue = todoInput.value.trim();
   if (todoInpValue === "") {
@@ -68,6 +90,7 @@ todoBtn.onclick = function todoInsert() {
   const todo = {
     id: crypto.randomUUID(),
     text: todoInpValue,
+    done: false
   };
   todoObj.push(todo);
   lStorageSave();
@@ -94,9 +117,12 @@ function renderTodos() {
   let html = "";
 
   todoObj.forEach((el) => {
+    const checked = el.done ? "checked" : "";
+    const completed = el.done ? "completed" : "";
     html += `
-    <li data-id="${el.id}">
-      <span class="dragHandle"  draggable="true">⋮⋮</span>
+    <li data-id="${el.id}" class="${completed}">
+      <span class="dragHandle"  draggable="true">⋮⋮</span>  
+        <input type="checkbox" class="todoCheckBox" ${checked}>
       <span class="todoText">${el.text}</span>
     <button class="todoDeleteBtn">Delete</button>
     </li>`;
