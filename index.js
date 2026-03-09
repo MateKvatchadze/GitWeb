@@ -5,8 +5,24 @@ const todo_key = "todo_key";
 let todoObj = [];
 let draggedId = null;
 
+const filterAll = document.getElementById("filterAll");
+const filterActive = document.getElementById("filterActive");
+const filterCompleted = document.getElementById("filterCompleted");
 let currentFilter  = "all"
 
+filterAll.onclick = function (){
+  currentFilter = "all";
+  renderTodos();
+}
+filterActive.onclick = function () {
+  currentFilter = "active";
+  renderTodos();
+};
+
+filterCompleted.onclick = function () {
+  currentFilter = "completed";
+  renderTodos();
+};
 
 todoUl.addEventListener("drop", function (e) {
   e.preventDefault();
@@ -115,8 +131,14 @@ renderTodos();
 
 function renderTodos() {
   let html = "";
-
-  todoObj.forEach((el) => {
+  let filteredTodos = todoObj;
+  if (currentFilter === "active") {
+  filteredTodos = todoObj.filter((todo) => !todo.done);
+}
+if(currentFilter === "completed"){
+  filteredTodos = todoObj.filter((todo => todo.done))
+}
+  filteredTodos.forEach((el) => {
     const checked = el.done ? "checked" : "";
     const completed = el.done ? "completed" : "";
     html += `

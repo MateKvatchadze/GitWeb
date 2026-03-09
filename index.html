@@ -10,14 +10,16 @@
 
 <body>
   <input type="text" id="todoInput" placeholder="enter your todo" autocomplete="off">
-  <button id="todoBtn">add Todo</button>
+  <button id="todoBtn">add Todo</button><br>
 
 
 
-  <fieldset>
-    <legend>todo list</legend>
+  <fieldset id="fieldsetTodo">
+    <h2>todo list</h2>
+    <button id="filterAll">All</button>
+    <button id="filterActive">Active</button>
+    <button id="filterCompleted">Completed</button>
 
-  
 
     <ul id="todoUl"></ul>
   </fieldset>
