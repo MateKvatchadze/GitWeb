@@ -4,6 +4,7 @@ const todoUl = document.getElementById("todoUl");
 const todo_key = "todo_key";
 let todoObj = [];
 let draggedId = null;
+let dragBlocked = false;
 
 const filterAll = document.getElementById("filterAll");
 const filterActive = document.getElementById("filterActive");
@@ -31,12 +32,17 @@ todoUl.addEventListener("drop", function (e) {
   if (!targetLi) return;
 
   const targetId = targetLi.dataset.id;
+    if (draggedId === targetId) return;
+    
+const draggedTodo = todoObj.find((t) => t.id === draggedId);
+const targetTodo = todoObj.find((t) => t.id === targetId);
+  if (!draggedTodo || !targetTodo) return;
 
-  if (draggedId === targetId) return;
+if (draggedTodo.done !== targetTodo.done) return;
 
   const fromIndex = todoObj.findIndex((t) => t.id === draggedId);
   const toIndex = todoObj.findIndex((t) => t.id === targetId);
-
+if(fromIndex.done !== toIndex.done) return;
   if (fromIndex === -1 || toIndex === -1) return;
 
   const [movedItem] = todoObj.splice(fromIndex, 1);
@@ -46,17 +52,28 @@ todoUl.addEventListener("drop", function (e) {
   renderTodos();
 });
 
+todoUl.addEventListener("pointerdown", function (e) {
+  dragBlocked =
+    !!e.target.closest(".todoDeleteBtn") ||
+    !!e.target.closest(".todoCheckBox");
+});
+todoUl.addEventListener("pointerup", function (e){
+  dragBlocked = false;
+});
+todoUl.addEventListener("pointercancel", function (e){
+  dragBlocked = false;
+})
+
 todoUl.addEventListener("dragstart", function (e) {
-  const handle = e.target.closest(".dragHandle");
-  if (!handle) {
+  const li = e.target.closest("li");
+   if(!li) return;
+
+  if (dragBlocked) {
     e.preventDefault();
     return;
   }
 
-  const li = handle.closest("li");
-  if (!li) return;
-
-  draggedId = li.dataset.id;
+   draggedId = li.dataset.id;
 });
 
 todoUl.addEventListener("dragover", function (e) {
@@ -92,6 +109,7 @@ todoUl.addEventListener("click", function (e) {
       if(!todo) return;
 
       todo.done = chekbox.checked;  
+      todoObj.sort((a, b) => Number(a.done) - Number(b.done))
       saveTodos();
       renderTodos();
       })
@@ -141,12 +159,12 @@ if(currentFilter === "completed"){
   filteredTodos.forEach((el) => {
     const checked = el.done ? "checked" : "";
     const completed = el.done ? "completed" : "";
+    const draggable = el.done ? "false" : "true";
     html += `
-    <li data-id="${el.id}" class="${completed}">
-      <span class="dragHandle"  draggable="true">⋮⋮</span>  
-        <input type="checkbox" class="todoCheckBox" ${checked}>
-      <span class="todoText">${el.text}</span>
-    <button class="todoDeleteBtn">Delete</button>
+    <li data-id="${el.id}" class="${completed}" draggable="${draggable}">
+        <input type="checkbox" class="todoCheckBox" ${checked} draggable="false">
+      <span class="todoText" >${el.text}</span>
+    <button class="todoDeleteBtn" draggable="false">Delete</button>
     </li>`;
   });
   todoUl.innerHTML = html;

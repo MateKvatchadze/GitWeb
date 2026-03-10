@@ -15,11 +15,6 @@ body{
 }
 
 
-.dragHandle {
-  cursor: grab;
-    margin-right: 10px;
-  user-select: none;
-}
 .dragHandle:active {
   cursor: grabbing;
 }
@@ -27,6 +22,7 @@ body{
 .completed .todoText{
   text-decoration: line-through;
   opacity: 0.6;
+  user-select: none;
 }
 #todoUl li{
   background-color: rgb(51, 49, 49);
